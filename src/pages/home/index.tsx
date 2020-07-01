@@ -1,22 +1,14 @@
 import React, { useState, useEffect } from 'react';
-
-/*
-Heineken exemplo
-600ml	- 6,99 - garrafa
-350ml	- 3,49 - lata
-250ml	- 2,79 - mini-lata
-330ml	- 4,39 - long neck
-5000ml	- 79,90 - barril 5L
-*/
+import Input from './Input';
 
 interface Item {
-    name?: string,
+    name: string,
     capacity: number,
     price?: number,
     calculatedPrice?: number;
 }
 
-export default function Home () {
+const Home = () => {
     const [items, setItems] = useState<Item[]>([]);
 
     useEffect(() => {
@@ -24,78 +16,84 @@ export default function Home () {
             {
                 name: 'Garrafa',
                 capacity: 600,
-                price: 1516.99
             },
             {
                 name: 'Latinha',
                 capacity: 350,
-                price: 0
+                price: 3.4
             },
             {
-                name: 'Mini-lata',
+                name: 'MiniLata',
                 capacity: 250,
-                price: 0
-            },            
-            {
-                name: 'Long neck',
-                capacity: 250,
-                price: 0
+                price: 2.44
             },
+            {
+                name: 'Longneck',
+                capacity: 250,
+                price: 2.99
+            },
+            {
+                name: 'Barrilzinho',
+                capacity: 5000,
+                price: 135
+            }
         ];
 
         setItems(items);
     }, []);
 
-    const formatPrice = (value: number | undefined) => {
-        if (!value)
-            return '';
+    function handleInputChange( price: EventTarget | undefined, index: number) {
+        console.log('handleInputChange', price)
+        // if (!price)
+        //     return;
 
-        // let valueFormated = value.toLocaleString('pt-br', { minimumFractionDigits: 2 });
+        // //const { name, value } = event.target;
 
-        return value.toString();
-    }
+        // //let priceValue = Number(price.replace(/\./g, '').replace(/\,/g, '.'));
 
-    const handleValue = (price: string | undefined, index: number) => {
-        if(!price)
-            return;
+        // /* clone array */
+        // let itemsCopy = [...items];
+
+        // let item = itemsCopy[index];
+        // item.price = Number(price);
+        // itemsCopy[index] = item;
+
         
-        let priceValue = Number(price.replace(/\./g,'').replace(/\,/g,'.'));
 
-        /* clone array */
-        let itemsCopy = [...items];
-
-        let item = itemsCopy[index];
-        item.price = priceValue;
-        itemsCopy[index] = item;
-
-        setItems(itemsCopy);
+        // setItems(itemsCopy);
     }
 
     const renderItems = () => {
         return (
-            items.map((iten, index) => (
-                <div key={index}>
-                    <label htmlFor={`item-${index}`}>R$</label>
-                    <input
-                        name={`item-${index}`}
-                        type="text"
-                        value={formatPrice(iten.price)}
-                        onChange={(el) => handleValue(el.target.value, index)} />
-                    <div>
-                        <strong>{iten.name ? iten.name : 'Personalizado'}</strong>
-                        <br />
-                        <small>{iten.capacity}</small>
+            <div>
+                <h1>Calculadora de bebida</h1>
+                {items.map((item, index) => (
+                    <div key={index}>
+                        <h2>{item.name}</h2>
+                        <span>{`${item.capacity}ml`}</span> <br />
+                        <Input
+                            prefix="R$"
+                            placeholder="0,00"
+                            name={`item-${index}`}
+                            value={item.price}
+                            onKeyUp={(el) => handleInputChange(el.target, index)}
+                        />
                     </div>
-                    <hr/>
-                </div>
-            ))
+                ))}
+                <br />
+                <button type="submit">
+                    Calcular
+                    </button>
+
+            </div>
         );
     }
 
     return (
         <>
-            <h1>Calculadora de bebida</h1>
             {renderItems()}
         </>
     );
 }
+
+export default Home;
