@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Input from './Input';
+import Input, { rawNumber } from '../../components/Input';
 
 interface Item {
     name: string,
@@ -35,15 +35,15 @@ const Home = () => {
             {
                 name: 'Barrilzinho',
                 capacity: 5000,
-                price: 135
+                price: 1352.22
             }
         ];
 
         setItems(items);
     }, []);
 
-    function handleInputChange( price: EventTarget | undefined, index: number) {
-        console.log('handleInputChange', price)
+    function handleInputChange( el: React.FormEvent<HTMLInputElement>, index: number) {
+        // console.log('handleInputChange', el.currentTarget.value)
         // if (!price)
         //     return;
 
@@ -58,9 +58,26 @@ const Home = () => {
         // item.price = Number(price);
         // itemsCopy[index] = item;
 
+        // setItems(itemsCopy);
+
+        let value = el.currentTarget.value;
+
+        // let priceValue = Number(price.replace(/\./g, '').replace(/\,/g, '.'));
+        let price = rawNumber(value);
+        console.log(value, price);
+
+        /* clone array */
+        let itemsCopy = [...items];
+
+        let item = itemsCopy[index];
+        
+        item.price = Number(price);
+        itemsCopy[index] = item;
+
+        setItems(itemsCopy);
+        console.log(itemsCopy);
         
 
-        // setItems(itemsCopy);
     }
 
     const renderItems = () => {
@@ -76,7 +93,7 @@ const Home = () => {
                             placeholder="0,00"
                             name={`item-${index}`}
                             value={item.price}
-                            onKeyUp={(el) => handleInputChange(el.target, index)}
+                            onChange={(el) => handleInputChange(el, index)}
                         />
                     </div>
                 ))}
